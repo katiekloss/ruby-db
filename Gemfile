@@ -1,5 +1,10 @@
 source "https://rubygems.org"
 
-gem 'debug'
+# Core
 gem 'zeitwerk'
+gem 'activesupport', require: 'active_support/all'
+
+# Testing
+gem 'debug'
+gem 'minitest'
 
