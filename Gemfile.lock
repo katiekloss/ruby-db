@@ -52,6 +52,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uri (1.0.3)
+    vernier (1.8.1)
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -62,6 +63,7 @@ DEPENDENCIES
   activesupport
   debug
   minitest
+  vernier
   zeitwerk
 
 BUNDLED WITH

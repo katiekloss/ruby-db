@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'tempfile'
+require 'securerandom'
+require_relative '../config/boot'
+
+file = Tempfile.new('perf.db')
+db = DB.new(file)
+start = Time.now
+
+ITERATIONS = 1000
+
+ITERATIONS.times do
+  db.set(rand(10000), SecureRandom.uuid)
+end
+
+end_write = Time.now
+
+ITERATIONS.times do
+  db.get(rand(10000))
+end
+
+end_read = Time.now
+
+puts "Ran for #{(end_read - start).round(3)} seconds"
+puts "#{(ITERATIONS/(end_write - start)).round} writes/s"
+puts "#{(ITERATIONS/(end_read - end_write)).round} reads/"
+
