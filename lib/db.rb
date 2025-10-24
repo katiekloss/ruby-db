@@ -6,14 +6,22 @@ class DB
 
 
   def set(id, value)
-    hash = as_hash
-    hash[id] = value
-    serialize!(hash)
+    @file.seek(0, IO::SEEK_END)
+    @file.write("#{id}: #{value}\n")
   end
 
 
   def get(id)
-    as_hash[id]
+    @file.seek(0)
+    entry = @file.each_line.reverse_each.detect do |line|
+      line.start_with?("#{id}: ")
+    end
+
+    if entry
+      entry.match(/[0-9]*: (.*)/)[1]
+    else
+      nil
+    end
   end
 
 
@@ -28,17 +36,6 @@ class DB
       end
 
       @hash
-    end
-
-
-    def serialize!(hash)
-      @file.truncate(0)
-
-      hash.each do |key, value|
-        @file.write("#{key}: #{value}\n")
-      end
-
-      @file.flush
     end
 
 end
