@@ -3,13 +3,9 @@ require_relative './test_helper'
 class DBTest < ActiveSupport::TestCase
 
   def setup
-    temp_file = Tempfile.new('test.db')
-    @db = DB.new(temp_file)
+    FileUtils.rm_rf(Dir['tmp/*'])
 
-    at_exit do
-      temp_file.close
-      temp_file.unlink
-    end
+    @db = DB.new('tmp')
   end
 
 
@@ -39,6 +35,17 @@ class DBTest < ActiveSupport::TestCase
 
     value = @db.get(2)
     assert_equal('2', value)
+  end
+
+
+  def test_multiple_segments
+    (DB::Segment::SEGMENT_MAX * 5).times do |i|
+      @db.set(i, 'hello world')
+    end
+
+    (DB::Segment::SEGMENT_MAX * 5).times do |i|
+      assert_equal('hello world', @db.get(i))
+    end
   end
 
 end

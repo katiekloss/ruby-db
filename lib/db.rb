@@ -1,41 +1,41 @@
 class DB
 
-  def initialize(file)
-    @file = file
+  def initialize(dir)
+    Segment.dir = dir
+    @segment = Segment.find_open
   end
 
 
   def set(id, value)
-    @file.seek(0, IO::SEEK_END)
-    @file.write("#{id}: #{value}\n")
+    if @segment.full?
+      @segment.close
+      @segment = Segment.new
+    end
+
+    @segment.write(id, value)
   end
 
 
   def get(id)
-    @file.seek(0)
-    entry = @file.each_line.reverse_each.detect do |line|
-      line.start_with?("#{id}: ")
+    Segment.all.each do |segment|
+      if result = segment.get(id)
+        return result
+      end
     end
 
-    if entry
-      entry.match(/[0-9]*: (.*)/)[1]
-    else
-      nil
-    end
+    nil
   end
 
 
   private
 
-    def as_hash
-      @hash = {}
-      @file.seek(0)
-      @file.each_line do |line|
-        matches = line.match(/([0-9]*): (.*)/)
-        @hash[matches[1].to_i] = matches[2]
+    def find_open_segment
+      segments = Dir[dir + '/*.segment']
+      segments.sort_by! do |segment|
+        segment.match(/\/(.*)\.segment/)[1].to_i
       end
 
-      @hash
+      segments.first
     end
 
 end

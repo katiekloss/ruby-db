@@ -4,11 +4,10 @@ require 'tempfile'
 require 'securerandom'
 require_relative '../config/boot'
 
-file = Tempfile.new('perf.db')
-db = DB.new(file)
+db = DB.new('tmp')
 start = Time.now
 
-ITERATIONS = 1000
+ITERATIONS = 100_000
 
 ITERATIONS.times do
   db.set(rand(10000), SecureRandom.uuid)

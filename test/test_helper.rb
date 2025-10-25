@@ -1,6 +1,6 @@
 require_relative '../config/boot'
 
-require 'tempfile'
+require 'fileutils'
 require 'minitest/autorun'
 
 class ActiveSupport::TestCase
