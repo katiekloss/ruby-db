@@ -39,13 +39,31 @@ class DBTest < ActiveSupport::TestCase
 
 
   def test_multiple_segments
-    (DB::Segment::SEGMENT_MAX * 5).times do |i|
+    (1024 * 5).times do |i|
       @db.set(i, 'hello world')
     end
 
-    (DB::Segment::SEGMENT_MAX * 5).times do |i|
+    (1024 * 5).times do |i|
       assert_equal('hello world', @db.get(i))
     end
+  end
+
+
+  def test_delete
+    @db.set(1, '1')
+    @db.delete(1)
+
+    value = @db.get(1)
+    assert_equal(nil, value)
+  end
+
+
+  def test_restore
+    @db.set(1, '1')
+    new_db = DB.new('tmp')
+
+    value = new_db.get(1)
+    assert_equal('1', value)
   end
 
 end

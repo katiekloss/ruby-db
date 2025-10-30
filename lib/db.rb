@@ -1,25 +1,34 @@
 class DB
 
+  MEMTABLE_MAX = 1024
+
+
   def initialize(dir)
-    Segment.dir = dir
-    @segment = Segment.find_open
+    @dir = Directory.new(dir)
+    @wal = WAL.new(@dir)
+    @memtable = @wal.to_memtable
   end
 
 
   def set(id, value)
-    if @segment.full?
-      @segment.close
-      @segment = Segment.new
+    if @memtable.count >= MEMTABLE_MAX
+      flush_memtable!
     end
 
-    @segment.write(id, value)
+    @wal.set(id, value)
+    @memtable[id] = value
   end
 
 
   def get(id)
-    Segment.all.each do |segment|
-      if result = segment.get(id)
-        return result
+    if result = @memtable[id]
+      return to_nil(result)
+    end
+
+    # Nothing in the memtable--we have to search the disk.
+    SSTable.all_reversed.each do |table|
+      if result = table.get(id)
+        return to_nil(result)
       end
     end
 
@@ -27,15 +36,21 @@ class DB
   end
 
 
+  def delete(id)
+    set(id, :tombstone)
+  end
+
+
   private
 
-    def find_open_segment
-      segments = Dir[dir + '/*.segment']
-      segments.sort_by! do |segment|
-        segment.match(/\/(.*)\.segment/)[1].to_i
-      end
+    def to_nil(value)
+      value == :tombstone ? nil : value
+    end
 
-      segments.first
+
+    def flush_memtable!
+      # flush to SSTable
+      @memtable = {}
     end
 
 end
