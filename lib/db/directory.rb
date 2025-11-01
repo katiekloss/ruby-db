@@ -12,4 +12,9 @@ class DB::Directory
     File.open(path, 'r+')
   end
 
+
+  def ls(glob)
+    Dir["#{@dir}/#{glob}"]
+  end
+
 end

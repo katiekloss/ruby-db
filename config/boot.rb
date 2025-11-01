@@ -11,3 +11,4 @@ loader.inflector.inflect(
   'sstable' => 'SSTable'
 )
 loader.setup
+loader.eager_load

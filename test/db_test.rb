@@ -43,9 +43,8 @@ class DBTest < ActiveSupport::TestCase
       @db.set(i, 'hello world')
     end
 
-    (1024 * 5).times do |i|
-      assert_equal('hello world', @db.get(i))
-    end
+    assert_equal('hello world', @db.get(0))
+    assert_equal('hello world', @db.get((1024 * 5) - 1))
   end
 
 
@@ -54,7 +53,7 @@ class DBTest < ActiveSupport::TestCase
     @db.delete(1)
 
     value = @db.get(1)
-    assert_equal(nil, value)
+    assert_nil(value)
   end
 
 

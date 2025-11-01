@@ -3,6 +3,8 @@ source "https://rubygems.org"
 # Core
 gem 'zeitwerk'
 gem 'activesupport', require: 'active_support/all'
+gem 'bindata'
+gem 'rake'
 
 # Performance
 gem 'vernier'
@@ -10,4 +12,5 @@ gem 'vernier'
 # Testing
 gem 'debug'
 gem 'minitest'
+gem 'irb'
 

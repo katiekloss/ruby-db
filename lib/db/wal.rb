@@ -6,7 +6,7 @@ class DB::WAL
 
 
   def set(id, value)
-    @file.write("#{id}:#{value}")
+    @file.write("#{id}:#{value}\n")
     @file.flush
   end
 
