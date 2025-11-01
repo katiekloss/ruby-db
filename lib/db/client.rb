@@ -52,6 +52,7 @@ module DB::Client
     def flush_memtable!
       @sstables.unshift(DB::SSTable.new_from_memtable(@dir, @memtable))
       @memtable = {}
+      @wal.reset!
     end
 
 end

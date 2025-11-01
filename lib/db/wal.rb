@@ -23,4 +23,9 @@ class DB::WAL
     hash
   end
 
+
+  def reset!
+    @file.truncate(0)
+  end
+
 end
